@@ -9,96 +9,23 @@
         @csrf
   
         <!-- Title -->
-        <div class="mb-0">
-          <label class="block mb-2 uppercase font-bold text-xs text-gray-700" for="title">
-            Title
-          </label>
-          <input  class="border border-gray-400 p-2 w-full mb-6" 
-                  type="text" 
-                  name="title" 
-                  id="title" 
-                  value="{{ old('title') }}"
-                  required
-          >
-          @error('title')
-            <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-          @enderror
-        </div>
+        <x-form.input name="title" />
 
         <!-- Slug -->
-        <div class="mb-0">
-          <label class="block mb-2 uppercase font-bold text-xs text-gray-700" for="slug">
-            Slug
-          </label>
-          <input  class="border border-gray-400 p-2 w-full mb-6" 
-                  type="text" 
-                  name="slug" 
-                  id="slug" 
-                  value="{{ old('slug') }}"
-                  required
-          >
-          @error('slug')
-            <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-          @enderror
-        </div>
-
+        <x-form.input name="slug" />
+        
         <!-- Thumbnail -->
-        <div class="mb-0">
-          <label
-            class="block mb-2 uppercase font-bold text-xs text-gray-700"
-            for="thumbnail"
-          >
-            Thumbnail
-          </label>
-
-          <input  class="border border-gray-400 p-2 w-full mb-6" 
-                  type="file" 
-                  name="thumbnail" 
-                  id="thumbnail" 
-                  required
-          >
-
-          @error('thumbnail')
-            <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-          @enderror
-        </div>
+        <x-form.input name="thumbnail" type="file" />
 
         <!-- Excerpt -->
-        <div class="mb-0">
-          <label class="block mb-2 uppercase font-bold text-xs text-gray-700" for="excerpt">
-            Excerpt
-          </label>
-          <textarea class="border border-gray-400 p-2 w-full mb-6" 
-                    name="excerpt" 
-                    id="excerpt" 
-                    required
-          >{{ old('excerpt') }}</textarea>
-          @error('excerpt')
-            <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-          @enderror
-        </div>
+        <x-form.textarea name="excerpt"/>
+        
+        <!-- Body -->
+        <x-form.textarea name="body" rows=4 />
 
-          <!-- Body -->
+        <!-- Category -->
         <div class="mb-0">
-          <label class="block mb-2 uppercase font-bold text-xs text-gray-700" for="body">
-            Body
-          </label>
-          <textarea class="border border-gray-400 p-2 w-full mb-6"
-                    name="body"
-                    id="body"
-                    rows="5"
-                    required
-          >{{ old('body') }}</textarea>
-          @error('body')
-            <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-          @enderror
-        </div>
-
-          <!-- Category -->
-        <div class="mb-0">
-          <label class="block mb-2 uppercase font-bold text-xs text-gray-700" for="category_id">
-            Category
-          </label>
+          <x-form.label name="category" />
 
           <select name="category_id" id="category_id">
             @foreach (\App\Models\Category::all() as $category)
@@ -108,13 +35,10 @@
               >{{ ucwords($category->name) }}</option>
             @endforeach
           </select>
-
-          @error('category_id')
-            <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-          @enderror
+          <x-form.error name="category" />
         </div>
-
-        <x-submit-button class="mt-6">Publish</x-submit-button>
+       
+        <x-form.submit-button class="mt-6">Publish</x-form.submit-button>
       </form>
     </x-panel>
   </section>

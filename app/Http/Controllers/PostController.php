@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Validation\Rule;
+use Illuminate\Console\View\Components\Error;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
@@ -40,7 +41,7 @@ class PostController extends Controller
         
         $attributes = request()->validate([
             'title' => 'required',
-            'thumbnail' => 'required|image',
+            'thumbnail' => 'require|image',
             'slug' => ['required', Rule::unique('posts', 'slug')],
             'excerpt' => 'required',
             'body' => 'required',
@@ -48,6 +49,7 @@ class PostController extends Controller
         ]);
 
         $attributes['user_id'] = auth()->id();
+
         $attributes['thumbnail'] = request()->file('thumbnail')->store('thumbnails');
 
         Post::create($attributes);
