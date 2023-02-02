@@ -28,17 +28,24 @@
                     <a href="/register" class="text-xs font-bold uppercase">Register</a>
                     <a href="/login" class="ml-3 text-xs font-bold uppercase">Log In</a>
                 @else
-                    <span class="text-xs font-bold uppercase">Welcome, {{ auth()->user()->name }}!</span>
+                    <!-- Trigger for dropdown menu -->
+                    <x-dropdown>
+                        <x-slot name="trigger">
+                            <button class="text-xs font-bold uppercase">Welcome, {{ auth()->user()->name }}!</button>
+                        </x-slot>
 
-                    <form action="/logout" method="post" class="text-sm font-bold text-blue-500 ml-5">
-                        <!-- Token -->
-                        @csrf
+                        <x-dropdown-item href="/admin/dashboard" :active="request()->is('admin/dashboard')">Dashboard</x-dropdown-item>
+                        <x-dropdown-item href="/admin/posts/create" :active="request()->is('admin/posts/create')">New Post</x-dropdown-item>
+                        <x-dropdown-item href="#" x-data="{}" @click.prevent="document.querySelector('#logout-form').submit()">Log Out</x-dropdown-item>
 
-                        <button type="submit">Log Out</button>
-                    </form>
+                        <form id="logout-form" action="/logout" method="post" class="hidden">
+                            <!-- Token -->
+                            @csrf
+                        </form>
+                    </x-dropdown>
                 @endguest
 
-                <a href="#newsletter" class="bg-blue-500 ml-3 rounded-full text-xs font-semibold text-white uppercase py-3 px-5">
+                <a href="#newsletter" class="bg-blue-500 ml-3 rounded-full text-xs font-semibold text-white uppercase py-3 px-5 hover:bg-blue-600">
                     Subscribe for Updates
                 </a>
             </div>
@@ -70,11 +77,9 @@
                             @enderror
                         </div>
 
-                        <button type="submit"
-                                class="transition-colors duration-300 bg-blue-500 hover:bg-blue-600 mt-4 lg:mt-0 lg:ml-3 rounded-full text-xs font-semibold text-white uppercase py-3 px-8"
-                        >
+                        <x-form.submit-button>
                             Subscribe
-                        </button>
+                        </x-form.submit-button>
                     </form>
                 </div>
             </div>
