@@ -27,23 +27,29 @@ class AdminPostController extends Controller
         if (auth()->guest()) {
             abort(Response::HTTP_FORBIDDEN);
         }
-        
+
         return view('admin.posts.create');
     }
 
     public function store()
-    {
+    {        
         // dd(request()->all());
         // Validação da requisição        
-        $attributes = $this->validatePost(new Post());
+
+        $attributes = request()->validate([
+            'title' => 'required',
+            'thumbnail' => 'required|image',
+            'slug' => ['required', Rule::unique('posts', 'slug')],
+            'excerpt' => 'required',
+            'body' => 'required',
+            'category_id' => ['required', Rule::exists('categories', 'id')]
+        ]);
 
         $attributes['user_id'] = auth()->id();
 
-        if ($attributes['thumbnail'] ?? false) {
+        if (isset($attributes['thumbnail'])) {
             $attributes['thumbnail'] = request()->file('thumbnail')->store('thumbnails');
         }
-
-        // request()->user()->posts()->create();
 
         Post::create($attributes);
 
@@ -59,11 +65,18 @@ class AdminPostController extends Controller
 
     public function update(Post $post)
     {
-        $attributes = $this->validatePost();
+        $attributes = request()->validate([
+            'title' => 'required',
+            'thumbnail' => 'image',
+            'slug' => ['required', Rule::unique('posts', 'slug')->ignore($post->id)],
+            'excerpt' => 'required',
+            'body' => 'required',
+            'category_id' => ['required', Rule::exists('categories', 'id')]
+        ]);
 
         $post->update($attributes);
 
-        if ($attributes['thumbnail'] ?? false) {
+        if (isset($attributes['thumbnail'])) {
             $attributes['thumbnail'] = request()->file('thumbnail')->store('thumbnails');
         }
 
@@ -75,20 +88,5 @@ class AdminPostController extends Controller
         $post->delete();
 
         return back()->with('success', 'Post Deleted!');
-    }
-
-    protected function validatePost(?Post $post = null): array
-    {
-        $post ??= new Post();
-
-        return request()->validate([
-            'title' => 'required',
-            'thumbnail' => $post->exists ? ['image'] : ['image'],
-            'slug' => ['required', Rule::unique('posts', 'slug')->ignore($post)],
-            'excerpt' => 'required',
-            'body' => 'required',
-            'category_id' => ['required', Rule::exists('categories', 'id')],
-            'published_at' => 'required'
-        ]);
     }
 }
